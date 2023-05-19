@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:com.io7m.upgate:1"
+        xmlns:u="urn:com.io7m.upgate:1">
+
+  <element name="User">
+    <complexType>
+      <attribute name="ID"
+                 type="unsignedInt"
+                 use="required"/>
+      <attribute name="GID"
+                 type="unsignedInt"
+                 use="required"/>
+      <attribute name="Name"
+                 type="string"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="Users">
+    <complexType>
+      <sequence minOccurs="0"
+                maxOccurs="unbounded">
+        <element ref="u:User"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="GroupMember">
+    <complexType>
+      <attribute name="User"
+                 type="string"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="Group">
+    <complexType>
+      <sequence minOccurs="0"
+                maxOccurs="unbounded">
+        <element ref="u:GroupMember"/>
+      </sequence>
+
+      <attribute name="ID"
+                 type="unsignedInt"
+                 use="required"/>
+      <attribute name="Name"
+                 type="string"
+                 use="required"/>
+    </complexType>
+
+    <unique name="GroupMembersUnique">
+      <selector xpath="u:GroupMember"/>
+      <field xpath="@User"/>
+    </unique>
+  </element>
+
+  <element name="Groups">
+    <complexType>
+      <sequence minOccurs="0"
+                maxOccurs="unbounded">
+        <element ref="u:Group"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="Configuration">
+    <complexType>
+      <sequence>
+        <element ref="u:Users"/>
+        <element ref="u:Groups"/>
+      </sequence>
+    </complexType>
+
+    <key name="UserIDsKey">
+      <selector xpath="u:Users/u:User"/>
+      <field xpath="@ID"/>
+    </key>
+
+    <key name="UserNameKey">
+      <selector xpath="u:Users/u:User"/>
+      <field xpath="@Name"/>
+    </key>
+
+    <key name="GroupIDsKey">
+      <selector xpath="u:Groups/u:Group"/>
+      <field xpath="@ID"/>
+    </key>
+
+    <key name="GroupNamesKey">
+      <selector xpath="u:Groups/u:Group"/>
+      <field xpath="@Name"/>
+    </key>
+
+    <!-- Usernames mentioned in groups must exist. -->
+    <keyref name="UserNameGroupMember"
+            refer="u:UserNameKey">
+      <selector xpath="u:Groups/u:Group/u:GroupMember"/>
+      <field xpath="@User"/>
+    </keyref>
+
+    <!-- Group IDs mentioned in users must exist. -->
+    <keyref name="UserGidGroupReference"
+            refer="u:GroupIDsKey">
+      <selector xpath="u:Users/u:User"/>
+      <field xpath="@GID"/>
+    </keyref>
+  </element>
+
+</schema>

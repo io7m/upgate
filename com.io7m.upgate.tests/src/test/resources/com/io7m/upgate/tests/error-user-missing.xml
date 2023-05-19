@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Configuration xmlns="urn:com.io7m.upgate:1">
+  <Users>
+    <User ID="1002" Name="_nexus"/>
+    <User ID="1003" Name="_jenkins"/>
+    <User ID="1004" Name="_jenkins_node"/>
+    <User ID="1005" Name="_idstore_db"/>
+    <User ID="1006" Name="_idstore"/>
+    <User ID="1007" Name="_gtyrell"/>
+  </Users>
+  <Groups>
+    <Group ID="1001" Name="_registry">
+      <GroupMember User="_registry"/>
+    </Group>
+    <Group ID="1002" Name="_nexus">
+      <GroupMember User="_nexus"/>
+    </Group>
+    <Group ID="1003" Name="_jenkins">
+      <GroupMember User="_jenkins"/>
+    </Group>
+    <Group ID="1004" Name="_jenkins_node">
+      <GroupMember User="_jenkins_node"/>
+    </Group>
+    <Group ID="1005" Name="_idstore_db">
+      <GroupMember User="_idstore_db"/>
+    </Group>
+    <Group ID="1006" Name="_idstore">
+      <GroupMember User="_idstore"/>
+    </Group>
+    <Group ID="1007" Name="_gtyrell">
+      <GroupMember User="_gtyrell"/>
+    </Group>
+  </Groups>
+</Configuration>
