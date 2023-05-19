@@ -16,6 +16,9 @@
 
 package com.io7m.upgate.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -30,6 +33,9 @@ import java.util.Optional;
 public final class UAdjustmentExecutor
   implements UAdjustmentExecutorType
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(UAdjustmentExecutor.class);
+
   private final UAdjustmentCommandExecutorType executor;
 
   private UAdjustmentExecutor(
@@ -65,11 +71,15 @@ public final class UAdjustmentExecutor
   {
     return new UAdjustmentExecutor(command -> {
       try {
+        LOG.debug("execute: {}", command);
+
         final var proc =
           new ProcessBuilder(command)
             .start();
 
         final var exitCode = proc.waitFor();
+        LOG.debug("execute: exit code {}", Integer.valueOf(exitCode));
+
         if (exitCode != 0) {
           throw new UException(
             "Command failed.",

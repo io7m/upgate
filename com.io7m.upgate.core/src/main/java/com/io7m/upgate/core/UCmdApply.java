@@ -21,6 +21,7 @@ import com.io7m.quarrel.core.QCommandContextType;
 import com.io7m.quarrel.core.QCommandMetadata;
 import com.io7m.quarrel.core.QCommandStatus;
 import com.io7m.quarrel.core.QCommandType;
+import com.io7m.quarrel.core.QParameterNamed01;
 import com.io7m.quarrel.core.QParameterNamed1;
 import com.io7m.quarrel.core.QParameterNamedType;
 import com.io7m.quarrel.core.QParametersPositionalNone;
@@ -53,8 +54,8 @@ public final class UCmdApply implements QCommandType
       Path.class
     );
 
-  private static final QParameterNamed1<Boolean> DRY_RUN =
-    new QParameterNamed1<>(
+  private static final QParameterNamed01<Boolean> DRY_RUN =
+    new QParameterNamed01<>(
       "--dry-run",
       List.of(),
       new QConstant(
@@ -77,6 +78,7 @@ public final class UCmdApply implements QCommandType
   {
     final var ps = new ArrayList<>(QLogback.parameters());
     ps.add(CONFIGURATION);
+    ps.add(DRY_RUN);
     return List.copyOf(ps);
   }
 
@@ -106,7 +108,7 @@ public final class UCmdApply implements QCommandType
       UDelta.delta(userDatabase, groupDatabase, configuration);
 
     final UAdjustmentExecutorType executor;
-    if (Objects.equals(context.parameterValue(DRY_RUN), TRUE)) {
+    if (Objects.equals(context.parameterValue(DRY_RUN).orElse(FALSE), TRUE)) {
       executor = UAdjustmentExecutor.ofDryRun(new PrintWriter(System.out));
     } else {
       executor = UAdjustmentExecutor.ofSystem();
