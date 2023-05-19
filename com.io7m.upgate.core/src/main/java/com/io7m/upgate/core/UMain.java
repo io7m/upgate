@@ -65,6 +65,7 @@ public final class UMain implements Runnable
     final var builder =
       QApplication.builder(metadata);
     builder.addCommand(new UCmdApply());
+    builder.addCommand(new UCmdSchema());
 
     this.application = builder.build();
     this.exitCode = 0;
