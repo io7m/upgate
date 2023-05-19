@@ -23,13 +23,13 @@ Create a configuration file containing a set of users and groups:
 
 <Configuration xmlns="urn:com.io7m.upgate:1">
   <Users>
-    <User ID="1001" GID="1001" Name="_registry"/>
-    <User ID="1002" GID="1002" Name="_nexus"/>
-    <User ID="1003" GID="1003" Name="_jenkins"/>
-    <User ID="1004" GID="1004" Name="_jenkins_node"/>
-    <User ID="1005" GID="1005" Name="_idstore_db"/>
-    <User ID="1006" GID="1006" Name="_idstore"/>
-    <User ID="1007" GID="1007" Name="_gtyrell"/>
+    <User ID="1001" GID="1001" Name="_registry" Shell="/sbin/nologin"/>
+    <User ID="1002" GID="1002" Name="_nexus" Shell="/sbin/nologin"/>
+    <User ID="1003" GID="1003" Name="_jenkins" Shell="/sbin/nologin"/>
+    <User ID="1004" GID="1004" Name="_jenkins_node" Shell="/sbin/nologin"/>
+    <User ID="1005" GID="1005" Name="_idstore_db" Shell="/sbin/nologin"/>
+    <User ID="1006" GID="1006" Name="_idstore" Shell="/sbin/nologin"/>
+    <User ID="1007" GID="1007" Name="_gtyrell" Shell="/sbin/nologin"/>
   </Users>
   <Groups>
     <Group ID="1001" Name="_registry">
@@ -74,4 +74,7 @@ performed:
 
 Users or groups not mentioned in the configuration file will be left
 unmodified.
+
+Use the `upgate schema` command to get an XSD schema against which the
+configuration file can be validated.
 

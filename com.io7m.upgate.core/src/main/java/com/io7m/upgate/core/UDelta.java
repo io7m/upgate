@@ -130,13 +130,17 @@ public final class UDelta
 
     final var exist1 = existingById.get();
     if (existingByName.isEmpty()) {
-      adjustments.add(new UAdjustmentGroupChangeName(
-        exist1.groupName(),
-        group));
+      adjustments.add(
+        new UAdjustmentGroupChangeName(exist1.groupName(), group));
       return;
     }
 
     final var exist0 = existingByName.get();
+    if (Objects.equals(exist0.groupName(), exist1.groupName())
+        && exist0.gid() == exist1.gid()) {
+      return;
+    }
+
     errors.add(new SStructuredError<>(
       "error-group-conflict",
       "Unsolvable group ID/Name conflict.",
@@ -192,6 +196,16 @@ public final class UDelta
     }
 
     final var exist0 = existingByName.get();
+    if (Objects.equals(exist0.name(), exist1.name())
+        && exist0.id() == exist1.id()) {
+
+      if (!Objects.equals(exist0.shell(), user.shell())) {
+        adjustments.add(new UAdjustmentUserChangeShell(user));
+        return;
+      }
+      return;
+    }
+
     errors.add(new SStructuredError<>(
       "error-user-conflict",
       "Unsolvable user ID/Name conflict.",

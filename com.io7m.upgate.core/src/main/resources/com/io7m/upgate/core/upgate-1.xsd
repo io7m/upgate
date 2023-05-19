@@ -15,6 +15,9 @@
       <attribute name="Name"
                  type="string"
                  use="required"/>
+      <attribute name="Shell"
+                 type="string"
+                 use="required"/>
     </complexType>
   </element>
 

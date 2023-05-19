@@ -27,6 +27,7 @@ public sealed interface UAdjustmentType
   UAdjustmentGroupChangeName,
   UAdjustmentGroupCreate,
   UAdjustmentUserChangeName,
+  UAdjustmentUserChangeShell,
   UAdjustmentUserChangeUID,
   UAdjustmentUserCreate
 {

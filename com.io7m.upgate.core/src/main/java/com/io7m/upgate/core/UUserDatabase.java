@@ -79,7 +79,8 @@ public record UUserDatabase(
           new UUserDatabaseEntry(
             segments.get(0),
             Integer.parseUnsignedInt(segments.get(2)),
-            Integer.parseUnsignedInt(segments.get(3))
+            Integer.parseUnsignedInt(segments.get(3)),
+            segments.get(segments.size() - 1)
           )
         );
       }
@@ -101,7 +102,13 @@ public record UUserDatabase(
     return this.entries.stream()
       .filter(u -> Objects.equals(u.userName, name))
       .findFirst()
-      .map(entry -> new UUser(entry.uid(), entry.gid(), entry.userName()));
+      .map(entry -> {
+        return new UUser(
+          entry.uid(),
+          entry.gid(),
+          entry.userName(),
+          entry.shell());
+      });
   }
 
   /**
@@ -118,7 +125,13 @@ public record UUserDatabase(
     return this.entries.stream()
       .filter(u -> u.uid() == id)
       .findFirst()
-      .map(entry -> new UUser(entry.uid(), entry.gid(), entry.userName()));
+      .map(entry -> {
+        return new UUser(
+          entry.uid(),
+          entry.gid(),
+          entry.userName(),
+          entry.shell());
+      });
   }
 
   /**
@@ -127,12 +140,14 @@ public record UUserDatabase(
    * @param userName The user name
    * @param gid      The primary group ID
    * @param uid      The user ID
+   * @param shell The user shell
    */
 
   public record UUserDatabaseEntry(
     String userName,
     int uid,
-    int gid)
+    int gid,
+    String shell)
   {
 
   }

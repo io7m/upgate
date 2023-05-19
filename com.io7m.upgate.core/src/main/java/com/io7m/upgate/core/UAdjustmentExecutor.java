@@ -111,28 +111,33 @@ public final class UAdjustmentExecutor
     final UAdjustmentType adjustment)
     throws UException
   {
-    if (adjustment instanceof UAdjustmentGroupChangeGID u) {
+    if (adjustment instanceof final UAdjustmentGroupChangeGID u) {
       this.executeGroupChangeGID(u);
       return;
     }
-    if (adjustment instanceof UAdjustmentGroupChangeName u) {
+    if (adjustment instanceof final UAdjustmentGroupChangeName u) {
       this.executeGroupChangeName(u);
       return;
     }
-    if (adjustment instanceof UAdjustmentGroupCreate u) {
+    if (adjustment instanceof final UAdjustmentGroupCreate u) {
       this.executeGroupCreate(u);
       return;
     }
-    if (adjustment instanceof UAdjustmentUserChangeUID u) {
+    if (adjustment instanceof final UAdjustmentUserChangeUID u) {
       this.executeUserChangeUID(u);
       return;
     }
-    if (adjustment instanceof UAdjustmentUserChangeName u) {
+    if (adjustment instanceof final UAdjustmentUserChangeName u) {
       this.executeUserChangeName(u);
       return;
     }
-    if (adjustment instanceof UAdjustmentUserCreate u) {
+    if (adjustment instanceof final UAdjustmentUserCreate u) {
       this.executeUserCreate(u);
+      return;
+    }
+    if (adjustment instanceof final UAdjustmentUserChangeShell u) {
+      this.executeUserChangeShell(u);
+      return;
     }
   }
 
@@ -213,6 +218,19 @@ public final class UAdjustmentExecutor
       "--gid",
       Integer.toUnsignedString(user.groupId()),
       "--no-create-home",
+      user.name()
+    ));
+  }
+
+  private void executeUserChangeShell(
+    final UAdjustmentUserChangeShell adjustment)
+    throws UException
+  {
+    final var user = adjustment.user();
+    this.executor.execute(List.of(
+      "usermod",
+      "--shell",
+      user.shell(),
       user.name()
     ));
   }

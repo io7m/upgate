@@ -94,7 +94,8 @@ public final class UConfigurations
         users.add(new UUser(
           Integer.parseUnsignedInt(userE.getAttribute("ID")),
           Integer.parseUnsignedInt(userE.getAttribute("GID")),
-          userE.getAttribute("Name")
+          userE.getAttribute("Name"),
+          userE.getAttribute("Shell")
         ));
       }
     }

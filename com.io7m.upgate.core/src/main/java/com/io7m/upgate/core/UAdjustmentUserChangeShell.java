@@ -14,38 +14,28 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 package com.io7m.upgate.core;
 
 import java.util.Objects;
 
 /**
- * A user.
+ * Change the shell of the given user.
  *
- * @param id      The user ID
- * @param groupId The primary group ID
- * @param name    The user name
- * @param shell   The user's shell
+ * @param user The user
  */
 
-public record UUser(
-  int id,
-  int groupId,
-  String name,
-  String shell)
+public record UAdjustmentUserChangeShell(
+  UUser user)
+  implements UAdjustmentType
 {
   /**
-   * A user.
+   * Change the name of the given user.
    *
-   * @param id      The user ID
-   * @param groupId The primary group ID
-   * @param name    The user name
-   * @param shell   The user's shell
+   * @param user The user
    */
 
-  public UUser
+  public UAdjustmentUserChangeShell
   {
-    Objects.requireNonNull(name, "name");
-    Objects.requireNonNull(shell, "shell");
+    Objects.requireNonNull(user, "user");
   }
 }

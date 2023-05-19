@@ -23,6 +23,7 @@ import com.io7m.upgate.core.UAdjustmentGroupChangeName;
 import com.io7m.upgate.core.UAdjustmentGroupCreate;
 import com.io7m.upgate.core.UAdjustmentType;
 import com.io7m.upgate.core.UAdjustmentUserChangeName;
+import com.io7m.upgate.core.UAdjustmentUserChangeShell;
 import com.io7m.upgate.core.UAdjustmentUserChangeUID;
 import com.io7m.upgate.core.UAdjustmentUserCreate;
 import com.io7m.upgate.core.UException;
@@ -40,6 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class UExecutorTest
 {
+  private static final String SHELL = "/sbin/nologin";
+
   private static List<String> execute(
     final List<UAdjustmentType> adjustments)
     throws UException
@@ -80,7 +83,7 @@ public final class UExecutorTest
   {
     final var lines =
       execute(List.of(
-        new UAdjustmentUserCreate(new UUser(1001, 1001, "user0"))
+        new UAdjustmentUserCreate(new UUser(1001, 1001, "user0", SHELL))
       ));
 
     assertEquals(
@@ -95,7 +98,7 @@ public final class UExecutorTest
   {
     final var lines =
       execute(List.of(
-        new UAdjustmentUserChangeName("y", new UUser(1001, 1001, "user0"))
+        new UAdjustmentUserChangeName("y", new UUser(1001, 1001, "user0", SHELL))
       ));
 
     assertEquals(
@@ -110,7 +113,7 @@ public final class UExecutorTest
   {
     final var lines =
       execute(List.of(
-        new UAdjustmentUserChangeUID(new UUser(1003, 1001, "user0"))
+        new UAdjustmentUserChangeUID(new UUser(1003, 1001, "user0", SHELL))
       ));
 
     assertEquals(
@@ -118,16 +121,6 @@ public final class UExecutorTest
       lines.get(0)
     );
   }
-
-
-
-
-
-
-
-
-
-
 
   @Test
   public void testGroupCreate()
@@ -170,6 +163,21 @@ public final class UExecutorTest
 
     assertEquals(
       "groupmod --gid 1003 x",
+      lines.get(0)
+    );
+  }
+
+  @Test
+  public void testUserChangeShell()
+    throws UException
+  {
+    final var lines =
+      execute(List.of(
+        new UAdjustmentUserChangeShell(new UUser(1003, 1001, "user0", SHELL))
+      ));
+
+    assertEquals(
+      "usermod --shell /sbin/nologin user0",
       lines.get(0)
     );
   }

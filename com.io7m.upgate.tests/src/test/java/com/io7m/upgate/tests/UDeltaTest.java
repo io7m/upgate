@@ -41,6 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class UDeltaTest
 {
+  private static final String SHELL = "/sbin/nologin";
+
   @BeforeEach
   public void setup()
   {
@@ -68,7 +70,7 @@ public final class UDeltaTest
     final var configuration =
       new UConfiguration(
         List.of(
-          new UUser(2000, 3000, "x")
+          new UUser(2000, 3000, "x", SHELL)
         ),
         List.of());
     final var users =
@@ -76,12 +78,12 @@ public final class UDeltaTest
         new UUserDatabase.UUserDatabaseEntry(
           "x",
           1000,
-          3000
+          3000, SHELL
         ),
         new UUserDatabase.UUserDatabaseEntry(
           "y",
           2000,
-          3000
+          3000, SHELL
         )
       ));
     final var groups =
@@ -94,13 +96,36 @@ public final class UDeltaTest
   }
 
   @Test
+  public void testUserNoChanges()
+    throws UException
+  {
+    final var configuration =
+      new UConfiguration(
+        List.of(
+          new UUser(2000, 3000, "x", SHELL)
+        ),
+        List.of());
+    final var users =
+      new UUserDatabase(List.of(
+        new UUserDatabase.UUserDatabaseEntry("x", 2000, 3000, SHELL)
+      ));
+    final var groups =
+      new UGroupDatabase(List.of());
+
+    final var delta =
+      UDelta.delta(users, groups, configuration);
+
+    assertEquals(List.of(), delta);
+  }
+
+  @Test
   public void testUserCreate0()
     throws UException
   {
     final var configuration =
       new UConfiguration(
         List.of(
-          new UUser(2000, 3000, "x")
+          new UUser(2000, 3000, "x", SHELL)
         ),
         List.of());
     final var users =
@@ -112,7 +137,7 @@ public final class UDeltaTest
       UDelta.delta(users, groups, configuration);
 
     assertEquals(
-      new UAdjustmentUserCreate(new UUser(2000, 3000, "x")),
+      new UAdjustmentUserCreate(new UUser(2000, 3000, "x", SHELL)),
       delta.get(0)
     );
   }
@@ -124,12 +149,12 @@ public final class UDeltaTest
     final var configuration =
       new UConfiguration(
         List.of(
-          new UUser(2000, 3000, "x")
+          new UUser(2000, 3000, "x", SHELL)
         ),
         List.of());
     final var users =
       new UUserDatabase(List.of(
-        new UUserDatabase.UUserDatabaseEntry("y", 2000, 3000)
+        new UUserDatabase.UUserDatabaseEntry("y", 2000, 3000, SHELL)
       ));
     final var groups =
       new UGroupDatabase(List.of());
@@ -138,7 +163,7 @@ public final class UDeltaTest
       UDelta.delta(users, groups, configuration);
 
     assertEquals(
-      new UAdjustmentUserChangeName("y", new UUser(2000, 3000, "x")),
+      new UAdjustmentUserChangeName("y", new UUser(2000, 3000, "x", SHELL)),
       delta.get(0)
     );
   }
@@ -150,12 +175,12 @@ public final class UDeltaTest
     final var configuration =
       new UConfiguration(
         List.of(
-          new UUser(2000, 3000, "x")
+          new UUser(2000, 3000, "x", SHELL)
         ),
         List.of());
     final var users =
       new UUserDatabase(List.of(
-        new UUserDatabase.UUserDatabaseEntry("x", 2001, 3000)
+        new UUserDatabase.UUserDatabaseEntry("x", 2001, 3000, SHELL)
       ));
     final var groups =
       new UGroupDatabase(List.of());
@@ -164,7 +189,7 @@ public final class UDeltaTest
       UDelta.delta(users, groups, configuration);
 
     assertEquals(
-      new UAdjustmentUserChangeUID(new UUser(2000, 3000, "x")),
+      new UAdjustmentUserChangeUID(new UUser(2000, 3000, "x", SHELL)),
       delta.get(0)
     );
   }
@@ -218,7 +243,7 @@ public final class UDeltaTest
       UDelta.delta(users, groups, configuration);
 
     assertEquals(
-      new UAdjustmentGroupChangeName("y", new UGroup(2000,"x", Map.of())),
+      new UAdjustmentGroupChangeName("y", new UGroup(2000, "x", Map.of())),
       delta.get(0)
     );
   }
@@ -283,5 +308,28 @@ public final class UDeltaTest
       UDelta.delta(users, groups, configuration);
     });
     assertEquals("error-group-conflict", ex.errorCode());
+  }
+
+  @Test
+  public void testGroupNoChanges()
+    throws UException
+  {
+    final var configuration =
+      new UConfiguration(
+        List.of(),
+        List.of(
+          new UGroup(2000, "g", Map.of())
+        ));
+    final var users =
+      new UUserDatabase(List.of());
+    final var groups =
+      new UGroupDatabase(List.of(
+        new UGroupDatabase.UGroupDatabaseEntry("g", 2000, List.of())
+      ));
+
+    final var delta =
+      UDelta.delta(users, groups, configuration);
+
+    assertEquals(List.of(), delta);
   }
 }
