@@ -118,6 +118,11 @@ public final class UDelta
     final var existingById =
       groupDatabase.groupForId(group.id());
 
+    /*
+     * Prepend the group creation to the adjustments list, because
+     * users might need to be created with this group as their primary.
+     */
+
     if (existingByName.isEmpty() && existingById.isEmpty()) {
       adjustments.add(0, new UAdjustmentGroupCreate(group));
       return;
